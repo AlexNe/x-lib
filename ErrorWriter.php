@@ -6,12 +6,12 @@ class X_ErrorWriter
 {
 	static $AllErrorList = [];
 	public $ErrorList = [];
-	function __construct($Type, $Message, $File, $Line, $StackTrace=false)
+	function __construct($Type, $Message, $File, $Line, $StackTrace=false, $vars = "")
 	{
-		$this->fixError($Type, $Message, $File, $Line, $StackTrace);
+		$this->fixError($Type, $Message, $File, $Line, $StackTrace, $vars);
 	}
 
-	public function fixError($Type, $Message, $File, $Line, $StackTrace=false)
+	public function fixError($Type, $Message, $File, $Line, $StackTrace=false, $vars = "")
 	{
 		$File = str_replace(ROOT_DIR, "", $File);
 		$Message = str_replace(ROOT_DIR, "", $Message);
@@ -28,6 +28,7 @@ class X_ErrorWriter
 			$this->ErrorList[$ErrorIndex]['message'] = $StackTrace?$Message."\n".$StackTrace:$Message;
 			$this->ErrorList[$ErrorIndex]['file'] = $File;
 			$this->ErrorList[$ErrorIndex]['line'] = $Line;
+			$this->ErrorList[$ErrorIndex]['vars'] = $vars;
 			$this->ErrorList[$ErrorIndex]['time'] = time();
 		}
 		X_ErrorWriter::$AllErrorList[$ErrorIndex] = $this->ErrorList[$ErrorIndex];

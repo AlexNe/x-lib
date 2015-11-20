@@ -71,7 +71,9 @@ class X_DB_MySQLi
 
 	public function Connect()
 	{
-		if(!isset(X_DB_MySQLi::$LINK[$this->DBLN]) || !X_DB_MySQLi::$LINK[$this->DBLN]->ping() )
+		if(!isset(X_DB_MySQLi::$LINK[$this->DBLN]) 
+			|| !(X_DB_MySQLi::$LINK[$this->DBLN] instanceof mysqli)
+			|| !X_DB_MySQLi::$LINK[$this->DBLN]->ping() )
 		{
 			X_DB_MySQLi::$LINK[$this->DBLN] = new mysqli( $this->DBHOST, $this->DBUSER, $this->DBPASS, $this->DBNAME );
 			X_DB_MySQLi::$LINK[$this->DBLN]->set_charset( $this->DBCHARSET );
@@ -93,17 +95,58 @@ class X_DB_MySQLi
 		return $this->insert($type.' INTO `'.$tableName.'` (`'.implode('`,`', $keys).'`) VALUES (\''.implode('\',\'', $values).'\')');
 	}
 
+	public function update($tableName, $arrayParams, $whereParams = null)
+	{
+		if( !is_array($arrayParams) || count($arrayParams) == 0 ) return false;
+		$params = "";
+		foreach ($arrayParams as $key => $value) {
+			$params .= "`".$key."` = '".$this->esc($value)."',";
+		}
+		$params = trim($params, ",");
+		$WHERE = "";
+		if($whereParams != null)
+		{
+			if(is_array($whereParams) && count($whereParams)>0 && is_string($whereParams[0]))
+			{
+				$WHERE = "WHERE ".$this->construct_where_param($whereParams);
+			}
+			else if(is_array($whereParams) && count($whereParams)>0 && is_array($whereParams[0]) && count($whereParams[0])>0 )
+			{
+				foreach ($whereParams as $value) 
+				{
+					if(strlen($WHERE) == 0 ) $WHERE = "WHERE "; else $WHERE .= " AND ";
+					$WHERE .= $this->construct_where_param($value);
+				}
+			}
+		}
+		return $this->rq('UPDATE `'.$tableName.'` SET '.$params.' '.$WHERE);
+	}
+
+	private function construct_where_param($whereParams)
+	{
+		if(count($whereParams) == 2 ) 
+			return "`".$whereParams[0]."`='".$this->esc($whereParams[1])."'";
+		if(count($whereParams) == 3 ) 
+			return "`".$whereParams[0]."`".$whereParams[1]."'".$this->esc($whereParams[2])."'";
+	}
+
 	public function insert($SQL)
 	{
 		if( X_DB_MySQLi::$LINK[$this->Connect()->DBLN]->real_query($SQL) ) return X_DB_MySQLi::$LINK[$this->DBLN]->insert_id;
 		else throw new Exception(X_DB_MySQLi::$LINK[$this->DBLN]->error, X_DB_MySQLi::$LINK[$this->DBLN]->errno);
 	}
 
+	public function esc( $value )
+	{
+		return X_DB_MySQLi::$LINK[$this->Connect()->DBLN]->real_escape_string( $value );
+	}
+	
 	public function rq( $SQL )
 	{
 		if( X_DB_MySQLi::$LINK[$this->Connect()->DBLN]->real_query($SQL) ) return true;
 		else throw new Exception(X_DB_MySQLi::$LINK[$this->DBLN]->error, X_DB_MySQLi::$LINK[$this->DBLN]->errno);
 	}
+
 	public function get($SQL,$ID_COL=false,$ID_COL2=false,$ID_COL3=false)
 	{	
 		if($this->rq($SQL))
@@ -141,10 +184,28 @@ class X_DB_MySQLi
 		else return false;
 	}
 
+	public function delete_in($table, $column, $data)
+	{
+		if(!(count($data)>0)) return false;
+		$SQL = "DELETE FROM";
+		$SQL .= " `".$table."` ";
+		$SQL .= "WHERE";
+		$SQL .= " `".$column."` in('";
+		$SQL .= implode("','", $data);
+		$SQL .= "')";
+		return $this->rq($SQL);
+	}
+	
 	function __destruct()
 	{
-		if ( isset( X_DB_MySQLi::$LINK[$this->DBLN] ) && X_DB_MySQLi::$LINK[$this->DBLN]->ping() ) 
+		if ( isset( X_DB_MySQLi::$LINK[$this->DBLN] ) 
+			&& X_DB_MySQLi::$LINK[$this->DBLN] instanceof mysqli
+			&& X_DB_MySQLi::$LINK[$this->DBLN]->ping() 
+		)
+		{
 			X_DB_MySQLi::$LINK[$this->DBLN]->close();
+			unset(X_DB_MySQLi::$LINK[$this->DBLN]);
+		}
 	}
 }
 ?>
