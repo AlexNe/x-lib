@@ -67,7 +67,7 @@ class X_Graphs_Linear
 		$IDX = 0;
 		foreach ($xLine as $key => $value) 
 		{
-			$X = (( $p_WIDTH * ($IDX) / $x_count ) + $X1);
+			$X = ($x_count>0)?(( $p_WIDTH * ($IDX) / $x_count ) + $X1):0;
 			$x_data_names[$key] = $X;
 			imagestring ( $this->image, 1, $X, $Y2 + 2, $value, $this->colors[5] );
 			$IDX++;
