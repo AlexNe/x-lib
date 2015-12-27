@@ -98,6 +98,7 @@ class X_HTTP_ProxyList
 			while (!is_array($data)) 
 			{
 				$data = unserialize(file_get_contents($this->data_dir."proxyList.txt"));
+				if($data == false) $data = [];
 				sleep(1);
 			}
 			return $data;
@@ -117,6 +118,7 @@ class X_HTTP_ProxyList
 			while (!is_array($data)) 
 			{
 				$data = unserialize(file_get_contents($this->data_dir."proxyList-fail.txt"));
+				if($data == false) $data = [];
 				sleep(1);
 			}
 			return $data;
@@ -136,6 +138,7 @@ class X_HTTP_ProxyList
 			while (!is_array($data)) 
 			{
 				$data = unserialize(file_get_contents($this->data_dir."proxyList-reject.txt"));
+				if($data == false) $data = [];
 				sleep(1);
 			}
 			return $data;
