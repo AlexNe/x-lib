@@ -1,7 +1,9 @@
 <?php
 if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 spl_autoload_register(
-	function ($className) {
+	function ($className) 
+	{
+		$className = str_replace("\\", "_", $className);
 		$classPath = explode('_', $className);
 		if ( array_shift( $classPath ) != 'X') return;
 		if ( ctype_digit( end( $classPath ) ) ) $V = "_" . array_pop($classPath); else $V = ""; // Version Control
