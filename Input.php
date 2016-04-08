@@ -55,6 +55,11 @@ class X_Input
 		return (is_numeric($this->Value)) ? $this->Value : 0;
 	}
 
+	public function float()
+	{
+		return floatval($this->Value);
+	}
+
 	public function string()
 	{
 		return strval($this->Value);
