@@ -1,7 +1,10 @@
 <?php
 class X_Session
 {
-	protected $key, $algo;
+	use X\Tool\urlSafe;
+
+	protected $key, $algo, $session = false, $IV = null;
+	protected $collName = "s";
 
 	function __construct()
 	{
@@ -13,6 +16,11 @@ class X_Session
 	{
 		$this->key = $this->strToHex($Key);
 	}
+	public function setIV($IV)
+	{
+		$this->IV = $this->strToHex($IV);
+	}
+
 	public function setAlgo($Algo)
 	{
 		if(in_array($Algo, openssl_get_cipher_methods()))
@@ -21,14 +29,65 @@ class X_Session
 		
 	}
 
-	protected function crypt(Array $Data) // : string // HEX
+	protected function make_session($Data, $algo = "b64")
 	{
-		return bin2hex(openssl_encrypt(implode(":", $Data), $this->algo, $this->key, OPENSSL_RAW_DATA ));
+		switch ($algo) 
+		{
+			case 'b64':
+				return $this->session = $this->crypt_b64($Data);
+				break;
+			
+			case 'hex':
+				return $this->session = $this->crypt_hex($Data);
+				break;
+			
+			case 'bin':
+				return $this->session = $this->crypt_bin($Data);
+				break;
+			
+			default:
+				return $this->session = $this->crypt_bin($Data);
+				break;
+		}
 	}
 
-	protected function decrypt($HEX) // : Array
+	public function set_cookie(Array $Data, $algo = "b64") // : void // php7
 	{
-		return explode(":", openssl_decrypt(hex2bin($HEX), $this->algo, $this->key, OPENSSL_RAW_DATA ));
+		setcookie($this->collName,
+			$this->make_session($Data, $algo),
+			time()+(60*60*24*30*12*10), ////////////////////////////////// TIME LIVE COOKIE 10 years
+			"/"
+		);
+	}
+
+	protected function crypt_bin(Array $Data) // : string // BIN
+	{
+		return openssl_encrypt(implode(":", $Data), $this->algo, $this->key, OPENSSL_RAW_DATA, $this->IV );
+	}
+
+	protected function decrypt_bin($BIN) // : Array
+	{
+		return explode(":", openssl_decrypt($BIN, $this->algo, $this->key, OPENSSL_RAW_DATA, $this->IV ));
+	}
+
+	protected function crypt_hex(Array $Data) // : string // HEX
+	{
+		return bin2hex( $this->crypt_bin($Data) );
+	}
+
+	protected function decrypt_hex($HEX) // : Array
+	{
+		return $this->decrypt_bin( hex2bin($HEX) );
+	}
+
+	protected function crypt_b64(Array $Data) // : string // Base64
+	{
+		return $this->urlSafeB64Encode( $this->crypt_bin($Data) );
+	}
+
+	protected function decrypt_b64($B64) // : Array
+	{
+		return $this->decrypt_bin( $this->urlSafeB64Decode($B64) );
 	}
 
 
@@ -38,6 +97,7 @@ class X_Session
 		for ($i=0; $i < strlen($string); $i++){ $hex .= dechex(ord($string[$i])); }
 		return $hex;
 	}
+
 	private function hexToStr($hex)
 	{
 		$string = "";
