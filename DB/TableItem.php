@@ -244,7 +244,7 @@ class TableItem
 
 	public function order($coll, $type)
 	{
-		$this->sql_order = " OREDR BY `{$coll}` {$type}";
+		$this->sql_order = "  ORDER BY `{$coll}` {$type}";
 		return $this;
 	}
 
