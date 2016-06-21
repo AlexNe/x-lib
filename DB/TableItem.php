@@ -5,6 +5,8 @@ class TableItem
 	protected $table_name;
 	protected $sql = "";
 	protected $sql_where = "";
+	protected $sql_order = "";
+	protected $sql_limit = "";
 	protected $sql_type;
 	protected $driver = null;
 	function __construct($name, $driver)
@@ -240,6 +242,18 @@ class TableItem
 		return implode(' ', $wheres);	
 	}
 
+	public function order($coll, $type)
+	{
+		$this->sql_order = " OREDR BY `{$coll}` {$type}";
+		return $this;
+	}
+
+	public function limit( $op1, $op2 = false );
+	{
+		if($op2) $this->sql_limit = " LIMIT {$op1},{$op2}";
+		else $this->sql_limit = " LIMIT {$op1}";
+		return $this;
+	}
 	private function escape($data)
 	{
 		if($this->driver instanceof \X_DB_MySQLi) return $this->driver->esc($data);
@@ -253,11 +267,11 @@ class TableItem
 	public function exec($op1=false,$op2=false,$op3=false)
 	{
 		if($this->sql_type == "update" && $this->driver instanceof \X_DB_MySQLi) 
-			return $this->driver->rq($this->sql.$this->sql_where);
+			return $this->driver->rq($this->sql . $this->sql_where);
 		if($this->sql_type == "insert" && $this->driver instanceof \X_DB_MySQLi) 
-			return $this->driver->insert($this->sql);
+			return $this->driver->insert( $this->sql );
 		if($this->sql_type == "select" && $this->driver instanceof \X_DB_MySQLi) 
-			return $this->driver->get($this->sql.$this->sql_where,$op1,$op2,$op3);
+			return $this->driver->get($this->sql . $this->sql_where  . $this->sql_order . $this->sql_limit ,$op1,$op2,$op3);
 		else throw new \Exception("Internal error", 0);
 	}
 }
