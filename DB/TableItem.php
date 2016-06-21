@@ -248,7 +248,7 @@ class TableItem
 		return $this;
 	}
 
-	public function limit( $op1, $op2 = false );
+	public function limit( $op1, $op2 = false )
 	{
 		if($op2) $this->sql_limit = " LIMIT {$op1},{$op2}";
 		else $this->sql_limit = " LIMIT {$op1}";
