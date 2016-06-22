@@ -1,0 +1,10 @@
+{
+    "name": "xfile/x-lib",
+    "authors": [
+        {
+            "name": "Александр Нежинский",
+            "email": "xfilee@gmail.com"
+        }
+    ],
+    "require": {}
+}
