@@ -1,5 +1,6 @@
 {
     "name": "xfile/x-lib",
+    "type": "library",
     "authors": [
         {
             "name": "Александр Нежинский",
