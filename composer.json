@@ -8,5 +8,11 @@
         }
     ],
     "version": "1.0.0",
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "X_": "",
+            "X\\": ""
+        }
+    }
 }
