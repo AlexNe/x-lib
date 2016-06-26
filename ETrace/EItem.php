@@ -4,8 +4,12 @@ namespace X\ETrace;
 /**
  *
  */
-class TItem extends \Exception
+class EItem extends \Exception
 {
+	/**
+	 * @var int
+	 */
+	protected $count = 1;
 	/**
 	 * @var mixed
 	 */
@@ -38,6 +42,7 @@ class TItem extends \Exception
 		}
 
 		$this->context = $context;
+		$this->hash    = $this->calcHash();
 	}
 
 	/**
@@ -51,9 +56,9 @@ class TItem extends \Exception
 	/**
 	 * @return mixed
 	 */
-	public function Dump()
+	public function Serialize()
 	{
-		return $this->Model();
+		return serialize($this->Model());
 	}
 
 	public function Model()
@@ -65,14 +70,29 @@ class TItem extends \Exception
 			"code"    => $this->code,
 			"file"    => $this->file,
 			"line"    => $this->line,
+			"count"   => $this->count,
 			"trace"   => $this->Trace(),
 			"context" => $this->context,
+			"globals" => $GLOBALS,
 		];
 	}
 
-	public function Save()
+	public function increment()
 	{
-		# code...
+		$this->count++;
+	}
+
+	/**
+	 * @return hex
+	 */
+	public function getHash()
+	{
+		return $this->hash;
+	}
+
+	private function calcHash()
+	{
+		return md5(serialize([$this->message, $this->code, $this->file, $this->line, $this->Trace()]));
 	}
 }
 ?>
