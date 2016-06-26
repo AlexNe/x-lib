@@ -28,6 +28,9 @@ class EItem extends \Exception
 	 * @param int    $line      [= false]
 	 * @param array  $context   [= []]
 	 */
+	/**
+	 * @return mixed
+	 */
 	public function __construct($type, $message, $code = 0, $file = false, $line = false, $context = [])
 	{
 		parent::__construct($message, $code);
@@ -43,6 +46,11 @@ class EItem extends \Exception
 
 		$this->context = $context;
 		$this->hash    = $this->calcHash();
+	}
+
+	public function __debugInfo()
+	{
+		return $this->Model();
 	}
 
 	/**
