@@ -9,7 +9,8 @@ class TItem extends \Exception
 	/**
 	 * @var mixed
 	 */
-	protected $Trace;
+	protected $hash;
+
 	/**
 	 * @var mixed
 	 */
@@ -37,7 +38,36 @@ class TItem extends \Exception
 		}
 
 		$this->context = $context;
-		$this->Trace   = $this->getTrace();
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function Trace()
+	{
+		return $this->getTrace();
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function Dump()
+	{
+		return $this->Model();
+	}
+
+	public function Model()
+	{
+		return
+			[
+			"hash"    => $this->hash,
+			"message" => $this->message,
+			"code"    => $this->code,
+			"file"    => $this->file,
+			"line"    => $this->line,
+			"trace"   => $this->Trace(),
+			"context" => $this->context,
+		];
 	}
 
 	public function Save()
