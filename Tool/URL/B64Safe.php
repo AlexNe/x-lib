@@ -1,7 +1,7 @@
 <?php
-namespace X\Tool;
+namespace X\Tool\URL;
 
-trait urlSafe {
+trait B64Safe {
 	/**
 	 * @param $data
 	 */

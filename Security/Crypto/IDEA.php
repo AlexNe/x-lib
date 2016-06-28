@@ -6,7 +6,7 @@ class IDEA {
 	use \X\Tool\Strings\CharHEX;
 	// protected function urlSafeB64Encode
 	// protected function urlSafeB64Decode
-	use \X\Tool\URL\urlSafe;
+	use \X\Tool\URL\B64Safe;
 
 	/**
 	 * @var hex
@@ -70,7 +70,7 @@ class IDEA {
 	}
 
 	/**
-	 * @param $HEX
+	 * @param  $HEX
 	 * @return mixed
 	 */
 	protected function decrypt_hex($HEX) // : Array
@@ -79,7 +79,7 @@ class IDEA {
 	}
 
 	/**
-	 * @param $Data
+	 * @param  $Data
 	 * @return mixed
 	 */
 	protected function crypt_b64($Data) // : string // Base64
@@ -88,7 +88,7 @@ class IDEA {
 	}
 
 	/**
-	 * @param $B64
+	 * @param  $B64
 	 * @return mixed
 	 */
 	protected function decrypt_b64($B64) // : Array
