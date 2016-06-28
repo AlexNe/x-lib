@@ -2,7 +2,7 @@
 class X_Session {
 	// protected function urlSafeB64Encode
 	// protected function urlSafeB64Decode
-	use \X\Tool\URL\B64Safe;
+	use X\Tool\URL\B64Safe;
 
 	/**
 	 * @var mixed

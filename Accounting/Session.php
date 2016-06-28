@@ -16,14 +16,14 @@ class SessionHacked extends \X\ETrace\Notification {}
  *  	hs 	= is_https(bool)
  *
  * 	crypto cheksum:
- * 		cheksum = ((( a & ( ! s ) ) ^ cc ) & u ) >> (t ^ op1)
+ * 		cheksum = ((( a & ( ! s ) ) | cc ) ^ u ) >> (t ^ op1)
  *
  * 	crypto code:
  * 		code = rand(0,time());
  * 		next_code = (code >> op2) ^ op3
  * 		prev_code =	(code ^ op3) << op2
  */
-class Session extends X\Security\Crypto\IDEA {
+class Session extends \X\Security\Crypto\IDEA {
 	//protected function BitwiseCROR($v, $c)
 	//protected function BitwiseCROL($v, $c)
 	use \X\Tool\BitwiseCyclicShift;
@@ -59,10 +59,10 @@ class Session extends X\Security\Crypto\IDEA {
 	}
 
 	protected function read_session() {
-		$In            = \X_Input();
+		$In            = new \X_Input();
 		$this->session = $In->CookieValue($this->session_name, false) ?: $In->Request($this->session_name, "")->string();
 		if (strlen($this->session) > 0) {
-			if (is_array($session_data = $this->decrypt_b64($this->session))) {
+			if (is_array($session_data = $this->explode(gzuncompress($this->decrypt_b64($this->session))))) {
 				if (isset($session_data["cs"]) && $session_data["cs"] == $this->crypto_checksum($session_data)) {
 					$this->session_data = $session_data;
 					return true;
@@ -81,8 +81,9 @@ class Session extends X\Security\Crypto\IDEA {
 		if ( ! isset($session_data["cc"])) {
 			$session_data["cc"] = $this->crypto_code_new();
 		}
-		$session_data["cs"] = $this->crypto_checksum($session_data);
-		return $this->crypt_b64($session_data);
+		$session_data["cs"]   = $this->crypto_checksum($session_data);
+		$this->session_data   = $session_data;
+		return $this->session = $this->crypt_b64(gzcompress($this->implode($session_data)));
 	}
 
 	/**
@@ -134,11 +135,11 @@ class Session extends X\Security\Crypto\IDEA {
 	 */
 	protected function crypto_checksum($session_data) {
 		if (is_array($session_data)) {
-			if ( ! $this->check_data_colls($D)) {
+			if ( ! $this->check_data_colls($session_data)) {
 				throw new SessionHacked("Session data not full!", $session_data);
 			}
 			$D = array_map(function ($i) {return intval($i);}, $session_data);
-			return $this->BitwiseCROR(((($D["a"] & ( ! $D["s"])) ^ $D["cc"]) & $D["u"]), ($D["t"] ^ $this->param_crypto[0]));
+			return $this->BitwiseCROR(((($D["a"] & ( ! $D["s"])) | $D["cc"]) ^ $D["u"]), ($D["t"] ^ $this->param_crypto[0]));
 		}
 	}
 
@@ -152,6 +153,28 @@ class Session extends X\Security\Crypto\IDEA {
 			"/"
 		);
 	}
+
+	/**
+	 * @param $data
+	 */
+	protected function implode($data) {
+		array_walk($data, function (&$i, $k) {$i = implode(":", [$k, $i]);});
+		return implode(";", $data);
+	}
+
+	/**
+	 * @param  $string
+	 * @return mixed
+	 */
+	protected function explode($string) {
+		$data_t = explode(";", $string);
+		$data   = [];
+		foreach ($data_t as $value) {
+			list($k, $i) = explode(":", $value);
+			$data[$k]    = $i;
+		}
+		return $data;
+	}
 }
 /**
  * EXAMPLE:
@@ -163,5 +186,7 @@ class Session extends X\Security\Crypto\IDEA {
  * 		parent::__construct(Config::KEY, Config::NAME, Config::CRYPTO);
  * 	}
  * }
+ *
+ *
  */
 ?>

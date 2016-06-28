@@ -14,10 +14,15 @@ class IDEA {
 	protected $key, $IV;
 
 	/**
+	 * @var mixed
+	 */
+	private $crypt_algo;
+	/**
 	 * @param string $key
 	 */
-	public function __construct($key) {
+	public function __construct($key, $Algo = "idea-ecb") {
 		$this->setKey($key);
+		$this->setAlgo($Algo);
 	}
 
 	/**
@@ -39,7 +44,7 @@ class IDEA {
 	 */
 	public function setAlgo($Algo) {
 		if (in_array($Algo, openssl_get_cipher_methods())) {
-			$this->algo = $Algo;
+			$this->crypt_algo = $Algo;
 		} else {
 			throw new \X\ETrace\System("Crypt Algorithm not found: " . $Algo, 0, ["allow_algo" => openssl_get_cipher_methods()]);
 		}
@@ -50,7 +55,7 @@ class IDEA {
 	 */
 	protected function crypt_bin($Data) // : string // BIN
 	{
-		return openssl_encrypt(implode(":", $Data), $this->algo, $this->key, OPENSSL_RAW_DATA, $this->IV);
+		return openssl_encrypt($Data, $this->crypt_algo, $this->key, OPENSSL_RAW_DATA, $this->IV);
 	}
 
 	/**
@@ -58,7 +63,7 @@ class IDEA {
 	 */
 	protected function decrypt_bin($BIN) // : Array
 	{
-		return explode(":", openssl_decrypt($BIN, $this->algo, $this->key, OPENSSL_RAW_DATA, $this->IV));
+		return openssl_decrypt($BIN, $this->crypt_algo, $this->key, OPENSSL_RAW_DATA, $this->IV);
 	}
 
 	/**
