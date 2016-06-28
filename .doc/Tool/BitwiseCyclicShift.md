@@ -1,5 +1,5 @@
 # Побитовый циклический сдвиг на PHP
-
+File [Tool\BitwiseCyclicShift.php](/Tool/BitwiseCyclicShift.php)
 ```php
 namespace X\Tool;
 trait BitwiseCyclicShift {
