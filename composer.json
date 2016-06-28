@@ -1,0 +1,17 @@
+{
+    "name": "xfile/x-lib",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Александр Нежинский",
+            "email": "xfilee@gmail.com"
+        }
+    ],
+    "version": "1.0.2",
+    "require": {},
+    "autoload": {
+        "files": [
+            "_autoload.php"
+        ]
+    }
+}
