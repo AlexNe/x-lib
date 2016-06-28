@@ -1,4 +1,7 @@
 # Побитовый циклический сдвиг на PHP
+
+circular shift (php)
+
 File [Tool\BitwiseCyclicShift.php](/Tool/BitwiseCyclicShift.php)
 ```php
 namespace X\Tool;
