@@ -5,8 +5,8 @@
 
 CLASS:
 * [X\Accounting\Session](/.doc/Accounting/Session.md) - Sessions
-* [X\Cache\Memcache](/.doc/Cache\Memcache.md) - Кэширование Memcache
-* [X\ETrace\ECollection](/.doc/ETrace\ECollection.md) - Коллекция отлова шибок
+* [X\Cache\Memcache](/.doc/Cache/Memcache.md) - Кэширование Memcache
+* [X\ETrace\ECollection](/.doc/ETrace/ECollection.md) - Коллекция отлова шибок
 * [X\ETrace\EItem](/.doc/ETrace/EItem.md) - Объект коллекции отлова ошибок
 * [X\ETrace\Error](/.doc/ETrace/Error.md) - Для отлова ошибок движка
 * [X\ETrace\Fatal](/.doc/ETrace/Fatal.md) - Отлов фатальных ошибок
@@ -15,10 +15,11 @@ CLASS:
 * [X\ETrace\Paranoid](/.doc/ETrace/Paranoid.md) - Параноидальный лог
 * [X\ETrace\System](/.doc/ETrace/System.md) - Системный лог
 * [X\ETrace\Trace](/.doc/ETrace/Trace.md) - Прастая трасировка
-* [X_Input_RequestItem](/.doc/Input/RequestItem.md) - Обрадотка вводимых данных
-    * [X_Input_MethodCookieItem](/.doc/Input/MethodCookieItem.md) - -""-
-    * [X_Input_MethodGetItem](/.doc/Input/MethodGetItem.md) - -""-
-    * [X_Input_MethodPostItem](/.doc/Input/MethodPostItem.md) - -""-
+* [X_Input](Input.md) - Обработка вводимых данный пользователем
+    * [X_Input_RequestItem](/.doc/Input/RequestItem.md) - --
+    * [X_Input_MethodCookieItem](/.doc/Input/MethodCookieItem.md) - --
+    * [X_Input_MethodGetItem](/.doc/Input/MethodGetItem.md) - --
+    * [X_Input_MethodPostItem](/.doc/Input/MethodPostItem.md) - --
 * [X\Security\Crypto\IDEA](/.doc/Security/Crypto/IDEA.md) - Шифрование IDEA
 
 TRAIT:

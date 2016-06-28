@@ -4,9 +4,10 @@ namespace X\Tool;
 trait BitwiseCyclicShift {
 
 	/**
-	 * @param  $v
-	 * @param  $c
-	 * @return mixed
+	 * Побитовый циклический сдвиг вправо (32bit)
+	 * @param  int   $v value
+	 * @param  int   $c count
+	 * @return int
 	 */
 	protected function BitwiseCROR($v, $c) {
 		$c = $c % 32;
@@ -14,9 +15,10 @@ trait BitwiseCyclicShift {
 	}
 
 	/**
-	 * @param  $v
-	 * @param  $c
-	 * @return mixed
+	 * Побитовый циклический сдвиг влево (32bit)
+	 * @param  int   $v value
+	 * @param  int   $c count
+	 * @return int
 	 */
 	protected function BitwiseCROL($v, $c) {
 		$c = $c % 32;
