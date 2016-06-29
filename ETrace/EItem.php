@@ -4,8 +4,7 @@ namespace X\ETrace;
 /**
  *
  */
-class EItem extends \Exception
-{
+class EItem extends \Exception {
 	/**
 	 * @var int
 	 */
@@ -31,16 +30,13 @@ class EItem extends \Exception
 	/**
 	 * @return mixed
 	 */
-	public function __construct($type, $message, $code = 0, $file = false, $line = false, $context = [])
-	{
+	public function __construct($type, $message, $code = 0, $file = false, $line = false, $context = []) {
 		parent::__construct($message, $code);
-		if ( ! ($file === false))
-		{
+		if ( ! ($file === false)) {
 			$this->file = $file;
 		}
 
-		if ( ! ($line === false))
-		{
+		if ( ! ($line === false)) {
 			$this->line = $line;
 		}
 
@@ -48,29 +44,35 @@ class EItem extends \Exception
 		$this->hash    = $this->calcHash();
 	}
 
-	public function __debugInfo()
-	{
+	/**
+	 * @return mixed
+	 */
+	public function __debugInfo() {
 		return $this->Model();
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function Trace()
-	{
+	public function Trace() {
 		return $this->getTrace();
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function Serialize()
-	{
+	public function getContext() {
+		return $this->context;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function Serialize() {
 		return serialize($this->Model());
 	}
 
-	public function Model()
-	{
+	public function Model() {
 		return
 			[
 			"hash"    => $this->hash,
@@ -85,21 +87,18 @@ class EItem extends \Exception
 		];
 	}
 
-	public function increment()
-	{
+	public function increment() {
 		$this->count++;
 	}
 
 	/**
 	 * @return hex
 	 */
-	public function getHash()
-	{
+	public function getHash() {
 		return $this->hash;
 	}
 
-	private function calcHash()
-	{
+	private function calcHash() {
 		return md5(serialize([$this->message, $this->code, $this->file, $this->line, $this->Trace()]));
 	}
 }
