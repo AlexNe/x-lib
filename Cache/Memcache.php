@@ -38,7 +38,7 @@ class Memcache {
 		}
 
 		$key = $this->prefix . $key;
-		return $this->mcache->set(md5($key), $value, 0, $expire);
+		return $this->mcache->set($key, $value, 0, $expire);
 	}
 
 	/**
@@ -50,7 +50,7 @@ class Memcache {
 		}
 
 		$key = $this->prefix . $key;
-		return $this->mcache->get(md5($key), 0);
+		return $this->mcache->get($key, 0);
 	}
 }
 ?>
