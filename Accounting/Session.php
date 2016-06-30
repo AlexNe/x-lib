@@ -58,6 +58,20 @@ class Session extends \X\Security\Crypto\IDEA {
 		$this->session_name = $name;
 	}
 
+	/**
+	 * @return mixed
+	 */
+	public function get_session_data() {
+		return $this->session_data;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function get_session() {
+		return $this->session;
+	}
+
 	protected function read_session() {
 		$In            = new \X_Input();
 		$this->session = $In->CookieValue($this->session_name, false) ?: $In->Request($this->session_name, "")->string();
