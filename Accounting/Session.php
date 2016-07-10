@@ -76,13 +76,15 @@ class Session extends \X\Security\Crypto\IDEA {
 		$In            = new \X_Input();
 		$this->session = $In->CookieValue($this->session_name, false) ?: $In->Request($this->session_name, "")->string();
 		if (strlen($this->session) > 0) {
-			if (is_array($session_data = $this->explode(gzuncompress($this->decrypt_b64($this->session))))) {
-				if (isset($session_data["cs"])) {
-					if ($session_data["cs"] == $this->crypto_checksum($session_data)) {
-						$this->session_data = $session_data;
-						return true;
-					} else {
-						throw new SessionChecksumError("Checksum Error", [get_defined_vars(), $this]);
+			if (is_string($SessionString = $this->decrypt_b64($this->session))) {
+				if (is_array($session_data = $this->explode(gzuncompress($SessionString)))) {
+					if (isset($session_data["cs"])) {
+						if ($session_data["cs"] == $this->crypto_checksum($session_data)) {
+							$this->session_data = $session_data;
+							return true;
+						} else {
+							throw new SessionChecksumError("Checksum Error", [get_defined_vars(), $this]);
+						}
 					}
 				}
 			}
