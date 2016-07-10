@@ -83,7 +83,7 @@ class Session extends \X\Security\Crypto\IDEA {
 							$this->session_data = $session_data;
 							return true;
 						} else {
-							throw new SessionChecksumError("Checksum Error", [get_defined_vars(), $this]);
+							throw new SessionChecksumError("Checksum Error", ["in_function" => get_defined_vars(), "in_class" => $this]);
 						}
 					}
 				}
