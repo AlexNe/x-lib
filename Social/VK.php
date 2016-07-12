@@ -15,7 +15,7 @@ class VK {
      */
     public function api($method, $params = []) {
 
-        $Client = new X\Network\Http\Client($this->api_url . "/" . $method);
+        $Client = new \X\Network\Http\Client($this->api_url . "/" . $method);
         $Client->set_model_data(["post" => $params]);
         if ($data = $Client->exec()->json_decode()) {
             return $data;
