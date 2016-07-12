@@ -52,8 +52,8 @@ class ClientSettings {
 					$this->data["get"] = $out;
 				}
 			}
-			return $this;
 		}
+		return $this;
 	}
 
 	/**
@@ -93,6 +93,7 @@ class ClientSettings {
 		if (isset($data["timeout"])) {
 			$this->data["timeout"] = intval($data["timeout"]) ?: 10;
 		}
+		return $this;
 	}
 
 	/**
@@ -101,6 +102,7 @@ class ClientSettings {
 	 */
 	public function add_getvar($name, $value) {
 		$this->data["get"][$name] = $value;
+		return $this;
 	}
 
 	/**
@@ -109,6 +111,7 @@ class ClientSettings {
 	 */
 	public function add_postvar($name, $value) {
 		$this->data["post"][$name] = $value;
+		return $this;
 	}
 
 	/**
@@ -116,6 +119,7 @@ class ClientSettings {
 	 */
 	public function set_putvar($value) {
 		$this->data["put"] = $value;
+		return $this;
 	}
 
 	protected function build_url() {

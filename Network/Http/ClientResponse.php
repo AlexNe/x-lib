@@ -48,7 +48,7 @@ class ClientResponse {
 		return $this->body;
 	}
 
-	public function get_json() {
+	public function json_decode() {
 		return json_decode($this->body, true);
 	}
 }
