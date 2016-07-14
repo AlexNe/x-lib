@@ -1,5 +1,6 @@
 <?php
 namespace X\Social\VK;
+class VKAPICredentialsIsNull extends \X\ETrace\System {}
 
 class VKAPI {
 
@@ -11,7 +12,7 @@ class VKAPI {
 	/**
 	 * @var \X\Social\VK\Credentials
 	 */
-	private $Credentials;
+	protected $Credentials;
 
 	/**
 	 * @var string
@@ -29,7 +30,7 @@ class VKAPI {
 		}
 
 		if (is_null($this->Credentials)) {
-			throw new \X\ETrace\System("VK Credentials is NULL", 0);
+			throw new VKAPICredentialsIsNull("VK Credentials is NULL", 0);
 		}
 	}
 
@@ -38,9 +39,15 @@ class VKAPI {
 	 * @param  array   $params
 	 * @return array
 	 */
-	public function api($method, $params = []) {
+	public function api($method, $params = []) {}
 
-		$Client = new \X\Network\Http\Client($this->api_url . "/" . $method);
+	/**
+	 * @param  $url
+	 * @param  $params
+	 * @return array
+	 */
+	protected function query($url, $params) {
+		$Client = new \X\Network\Http\Client($url);
 		$Client->set_model_data(["post" => $params]);
 		if ($data = $Client->exec()->json_decode()) {
 			return $data;

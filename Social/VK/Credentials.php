@@ -1,5 +1,7 @@
 <?php
 namespace X\Social\VK;
+class CredentialsClientIdError extends \X\ETrace\System {}
+class CredentialsClientSecretError extends \X\ETrace\System {}
 
 class Credentials {
 	/**
@@ -10,17 +12,17 @@ class Credentials {
 	 * @param $client_id
 	 * @param $client_secret
 	 */
-	public function __construct($client_id, $client_secret, $api_version = "5.28") {
+	public function __construct($client_id, $client_secret, $api_version = "5.52") {
 		if (is_numeric($client_id) && $client_id > 0) {
 			$this->client_id = $client_id;
 		} else {
-			throw new \X\ETrace\System("VK Client ID not numeric or not > 0", 0, ["client_id" => $client_id]);
+			throw new CredentialsClientIdError("VK Client ID not numeric or not > 0", 0, ["client_id" => $client_id]);
 		}
 
 		if (is_string($client_secret) && strlen($client_secret) > 0) {
 			$this->client_secret = $client_secret;
 		} else {
-			throw new \X\ETrace\System("VK Client Secret not string or len =< 0", 0, ["client_secret" => $client_secret]);
+			throw new CredentialsClientSecretError("VK Client Secret not string or len =< 0", 0, ["client_secret" => $client_secret]);
 		}
 		$this->api_version = $api_version;
 	}
