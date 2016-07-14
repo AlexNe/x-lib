@@ -17,7 +17,7 @@ class Client extends ClientSettings {
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, $this->build_url());
 
-		if (isset($this->data["cookies"]) && is_array($this->data["cookies"])) {
+		if (isset($this->data["cookies"]) && is_array($this->data["cookies"]) && count($this->data["cookies"]) > 0) {
 			curl_setopt($curl, CURLOPT_COOKIE, $this->implode_cookies());
 		}
 
@@ -29,7 +29,7 @@ class Client extends ClientSettings {
 		#	curl_setopt($curl, CURLOPT_PROXY, $this->Proxy);
 		#}
 
-		if (isset($this->data["post"]) && is_array($this->data["post"])) {
+		if (isset($this->data["post"]) && is_array($this->data["post"]) && count($this->data["post"]) > 0) {
 			curl_setopt($curl, CURLOPT_POST, true);
 			curl_setopt($curl, CURLOPT_POSTFIELDS, $this->build_post());
 		}

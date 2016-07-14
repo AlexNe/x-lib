@@ -1,6 +1,8 @@
 <?php
 namespace X\Social\VK;
 class VKAPICredentialsIsNull extends \X\ETrace\System {}
+class VKAPIResponseError extends \X\ETrace\System {}
+class VKAPIResponseNull extends \X\ETrace\System {}
 
 class VKAPI {
 
@@ -17,7 +19,7 @@ class VKAPI {
 	/**
 	 * @var string
 	 */
-	private $api_url;
+	protected $api_url = "https://api.vk.com/";
 
 	/**
 	 * @param \X\Social\VK\Credentials $Credentials
@@ -46,7 +48,7 @@ class VKAPI {
 	 * @param  $params
 	 * @return array
 	 */
-	protected function query($url, $params) {
+	protected function query($url, $params = []) {
 		$Client = new \X\Network\Http\Client($url);
 		$Client->set_model_data(["post" => $params]);
 		if ($data = $Client->exec()->json_decode()) {
