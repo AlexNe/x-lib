@@ -1,7 +1,6 @@
 <?php
-/*
-НЕ ТРОЖ!!! :)
- */
+class XDatabaseParamError extends \X\ETrace\System {}
+
 class X_DB_MySQLi {
 	/**
 	 * @var array
@@ -335,6 +334,10 @@ class X_DB_MySQLi {
 	 * @return mixed
 	 */
 	public function delete_in($table, $column, $data) {
+		if ( ! is_array($data)) {
+			throw new XDatabaseParamError("Param 'data' must have type array in function 'db->delete_in( string table, sting column, array data)'", 0);
+		}
+
 		if ( ! (count($data) > 0)) {
 			return false;
 		}
