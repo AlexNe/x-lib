@@ -335,7 +335,8 @@ class X_DB_MySQLi {
 	 */
 	public function delete_in($table, $column, $data) {
 		if ( ! is_array($data)) {
-			throw new XDatabaseParamError("Param 'data' must have type array in function 'db->delete_in( string table, sting column, array data)'", 0);
+			throw new XDatabaseParamError("Param 'data' must have type array in function 'db->delete_in( string table, sting column, array data)'", 0,
+				["table" => $table, "column" => $column, "data" => $data]);
 		}
 
 		if ( ! (count($data) > 0)) {
