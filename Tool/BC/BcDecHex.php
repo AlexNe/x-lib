@@ -12,7 +12,7 @@ trait BcDecHex {
 		if ($remain == 0) {
 			return dechex($last);
 		} else {
-			return bcdechex($remain) . dechex($last);
+			return $this->bcdechex($remain) . dechex($last);
 		}
 	}
 }
