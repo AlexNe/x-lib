@@ -39,7 +39,7 @@ class TableItem {
 	}
 
 	/**
-	 * @param $Data
+	 * @param  $Data
 	 * @return mixed
 	 */
 	public function insert($Data) {
@@ -49,7 +49,7 @@ class TableItem {
 	}
 
 	/**
-	 * @param $Data
+	 * @param  $Data
 	 * @return mixed
 	 */
 	public function replace($Data) {
@@ -104,8 +104,14 @@ class TableItem {
 		return $this;
 	}
 
+	public function delete() {
+		$this->sql_type = "delete";
+		$this->sql      = "DELETE FROM `{$this->table_name}`";
+		return $this;
+	}
+
 	/**
-	 * @param $data
+	 * @param  $data
 	 * @return mixed
 	 */
 	public function where($data) {
@@ -114,9 +120,9 @@ class TableItem {
 	}
 
 	/**
-	 * @param $data
-	 * @param $operator
-	 * @param false $gr
+	 * @param  $data
+	 * @param  $operator
+	 * @param  false       $gr
 	 * @return mixed
 	 */
 	private function where_clause($data, $operator = false, $gr = false) {
@@ -293,7 +299,7 @@ class TableItem {
 	}
 
 	/**
-	 * @param $data
+	 * @param  $data
 	 * @return mixed
 	 */
 	private function escape($data) {
@@ -310,9 +316,9 @@ class TableItem {
 	}
 
 	/**
-	 * @param $op1
-	 * @param false $op2
-	 * @param false $op3
+	 * @param  $op1
+	 * @param  false   $op2
+	 * @param  false   $op3
 	 * @return mixed
 	 */
 	public function exec($op1 = false, $op2 = false, $op3 = false) {
@@ -326,9 +332,12 @@ class TableItem {
 
 		if ($this->sql_type == "select" && $this->driver instanceof \X_DB_MySQLi) {
 			return $this->driver->get($this->sql . $this->sql_where . $this->sql_order . $this->sql_limit, $op1, $op2, $op3);
-		} else {
-			throw new \Exception("Internal error", 0);
 		}
+		if ($this->sql_type == "delete" && $this->driver instanceof \X_DB_MySQLi) {
+			return $this->driver->rq($this->sql . $this->sql_where);
+		}
+
+		throw new \Exception("Internal error", 0);
 	}
 }
 ?>

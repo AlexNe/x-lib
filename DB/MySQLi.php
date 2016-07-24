@@ -1,5 +1,6 @@
 <?php
 class XDatabaseParamError extends \X\ETrace\System {}
+class XDatabaseQueryError extends \X\ETrace\System {}
 
 class X_DB_MySQLi {
 	/**
@@ -267,7 +268,7 @@ class X_DB_MySQLi {
 		if (self::$LINK[$this->Connect()->DBLN]->real_query($SQL)) {
 			return true;
 		} else {
-			throw new Exception(self::$LINK[$this->DBLN]->error, self::$LINK[$this->DBLN]->errno);
+			throw new XDatabaseQueryError(self::$LINK[$this->DBLN]->error, self::$LINK[$this->DBLN]->errno, ["SQL" => $SQL, "CLASS" => $this]);
 		}
 	}
 
