@@ -48,7 +48,7 @@ class X_DB_MySQLi {
 	public function __construct() {
 		$cfg = func_get_args();
 		if ( ! (count($cfg) > 0)) {
-			throw new Exception("DB_MySQLi_NULL_CONSTRUCT_ARGUMENT", X_Exception_List::DB_MySQLi_NULL_CONSTRUCT_ARGUMENT);
+			throw new XDatabaseParamError("DB_MySQLi_NULL_CONSTRUCT_ARGUMENT", X_Exception_List::DB_MySQLi_NULL_CONSTRUCT_ARGUMENT);
 		}
 
 		if (is_array($cfg[0])) {
@@ -249,7 +249,7 @@ class X_DB_MySQLi {
 		if (self::$LINK[$this->Connect()->DBLN]->real_query($SQL)) {
 			return self::$LINK[$this->DBLN]->insert_id;
 		} else {
-			throw new Exception(self::$LINK[$this->DBLN]->error, self::$LINK[$this->DBLN]->errno);
+			throw new XDatabaseQueryError(self::$LINK[$this->DBLN]->error, self::$LINK[$this->DBLN]->errno);
 		}
 	}
 
@@ -280,7 +280,7 @@ class X_DB_MySQLi {
 		if (self::$LINK[$this->Connect()->DBLN]->query($SQL)) {
 			return true;
 		} else {
-			throw new Exception(self::$LINK[$this->DBLN]->error, self::$LINK[$this->DBLN]->errno);
+			throw new XDatabaseQueryError(self::$LINK[$this->DBLN]->error, self::$LINK[$this->DBLN]->errno);
 		}
 	}
 
