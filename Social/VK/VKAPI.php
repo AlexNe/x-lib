@@ -51,8 +51,11 @@ class VKAPI {
 	protected function query($url, $params = []) {
 		$Client = new \X\Network\Http\Client($url);
 		$Client->set_model_data(["post" => $params]);
-		if ($data = $Client->exec()->json_decode()) {
+		$ClientResponse = $Client->exec();
+		if ($data = $ClientResponse->json_decode()) {
 			return $data;
+		} else {
+			return $ClientResponse->get_body();
 		}
 		return;
 	}
