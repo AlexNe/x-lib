@@ -54,10 +54,10 @@ class VKAPI {
 		$ClientResponse = $Client->exec();
 		if ($data = $ClientResponse->json_decode()) {
 			return $data;
-		} else {
-			return $ClientResponse->get_body();
-		}
-		return;
+		} #else {
+		#return $ClientResponse->get_body();
+		#}
+		return false;
 	}
 }
 ?>

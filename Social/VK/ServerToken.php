@@ -28,8 +28,11 @@ class ServerToken extends VKAPI {
 		$params["client_secret"] = $this->Credentials->get_client_secret();
 		$params["grant_type"]    = "client_credentials";
 		$params["v"]             = $this->Credentials->get_api_version();
-
-		$data = $this->query($this->oauth_url . "access_token", $params);
+		$data                    = false;
+		while ( ! $data) {
+			$data = $this->query($this->oauth_url . "access_token", $params);
+			if ( ! $data) {sleep(1);}
+		}
 		if (isset($data["access_token"])) {
 			$this->server_token = $data["access_token"];
 		} else {
