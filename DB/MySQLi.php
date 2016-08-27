@@ -348,7 +348,7 @@ class X_DB_MySQLi {
 		$SQL .= " `" . $table . "` ";
 		$SQL .= "WHERE";
 		$SQL .= " `" . $column . "` in('";
-		$SQL .= (count($data) > 1) ? implode("','", $data) : (count($data) == 1) ? array_shift($data) : "";
+		$SQL .= (count($data) > 1) ? implode("','", $data) : ((count($data) == 1) ? array_shift($data) : "");
 		$SQL .= "')";
 		return $this->rq($SQL);
 	}
