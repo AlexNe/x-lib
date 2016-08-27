@@ -329,6 +329,19 @@ class X_DB_MySQLi {
 	}
 
 	/**
+	 * @param $SQL
+	 * @return mixed
+	 */
+	public function first($SQL) {
+		$data = $this->get($SQL);
+		if (is_array($data) && count($data) > 0) {
+			return $data[0];
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * @param  $table
 	 * @param  $column
 	 * @param  $data

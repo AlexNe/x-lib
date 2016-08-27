@@ -89,6 +89,21 @@ class TableItem {
 		return $this;
 	}
 
+	public function first() {
+		$columns = func_get_args();
+		if (count($columns) == 1 && is_array($columns[0])) {
+			$columns = "`" . implode("`,`", $columns[0]) . "`";
+		} else if (count($columns) > 1) {
+			$columns = "`" . implode("`,`", $columns) . "`";
+		} else {
+			$columns = "*";
+		}
+
+		$this->sql_type = "first";
+		$this->sql      = "SELECT {$columns} FROM `{$this->table_name}`";
+		return $this;
+	}
+
 	public function select() {
 		$columns = func_get_args();
 		if (count($columns) == 1 && is_array($columns[0])) {
@@ -332,6 +347,9 @@ class TableItem {
 
 		if ($this->sql_type == "select" && $this->driver instanceof \X_DB_MySQLi) {
 			return $this->driver->get($this->sql . $this->sql_where . $this->sql_order . $this->sql_limit, $op1, $op2, $op3);
+		}
+		if ($this->sql_type == "first" && $this->driver instanceof \X_DB_MySQLi) {
+			return $this->driver->first($this->sql . $this->sql_where . $this->sql_order . $this->sql_limit, $op1, $op2, $op3);
 		}
 		if ($this->sql_type == "delete" && $this->driver instanceof \X_DB_MySQLi) {
 			return $this->driver->rq($this->sql . $this->sql_where);
