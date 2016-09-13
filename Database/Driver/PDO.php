@@ -148,7 +148,7 @@ class PDO {
 	public function insert($table, $data, $replace) {
 
 		$keys    = array_keys($data);
-		$pattern = array_map(function ($string) {return ":{$string}";}, $keys);
+		$pattern = array_map(function ($key) {return ":{$key}";}, $keys);
 		if ($replace) {
 			$type = "REPLACE";
 		} else {
@@ -202,22 +202,47 @@ class PDO {
 				$statement->bindValue(":{$key}", $data[$key], \PDO::PARAM_STR);
 			}
 		}
-		foreach ($whete_obj->get_dataset() as $key => $data_item) {
-			if (is_integer($data_item)) {
-				$statement->bindValue($key, $data_item, \PDO::PARAM_INT);
-			} else {
-				$statement->bindValue($key, $data_item, \PDO::PARAM_STR);
-			}
-		}
+		$whete_obj->bind($statement);
 		return $statement->execute();
 	}
 
 	/**
-	 * @param $table
-	 * @param array      $where
-	 * @param $columns
+	 * @param  $table
+	 * @param  array    $where
+	 * @param  $order
+	 * @param  null     $limit
+	 * @param  null     $columns
+	 * @return mixed
+	 */
+	public function simple($table, $where = [], $order = null, $limit = null, $columns = "*") {
+		$statement = $this->select_statement($table, $where, $order, 1, $columns);
+		if ($statement->columnCount() > 0) {
+			return $statement->fetchAll(\PDO::FETCH_ASSOC)[0];
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @param  $table
+	 * @param  array    $where
+	 * @param  $order
+	 * @param  null     $limit
+	 * @param  null     $columns
+	 * @return mixed
 	 */
 	public function select($table, $where = [], $order = null, $limit = null, $columns = "*") {
+		return $this->select_statement($table, $where, $order, $limit, $columns)->fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	/**
+	 * @param $table
+	 * @param array    $where
+	 * @param $order
+	 * @param null     $limit
+	 * @param null     $columns
+	 */
+	public function select_statement($table, $where = [], $order = null, $limit = null, $columns = "*") {
 		$SQL       = "SELECT {$columns} FROM `{$table}` ";
 		$whete_obj = new PDOWhereConstructor($where);
 		$SQL .= $whete_obj->get_sql();
@@ -232,15 +257,10 @@ class PDO {
 		}
 
 		$statement = $this->prepare($SQL);
-		foreach ($whete_obj->get_dataset() as $key => $data_item) {
-			if (is_integer($data_item)) {
-				$statement->bindValue($key, $data_item, \PDO::PARAM_INT);
-			} else {
-				$statement->bindValue($key, $data_item, \PDO::PARAM_STR);
-			}
-		}
+		$whete_obj->bind($statement);
 		$statement->execute();
-		return $statement->fetchAll(\PDO::FETCH_ASSOC);
+		return $statement;
 	}
 }
+
 ?>

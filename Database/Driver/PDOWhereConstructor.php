@@ -192,5 +192,18 @@ class PDOWhereConstructor {
 	private function not_column_operator($data) {
 		if (is_array($data)) {return "NOT IN";} else {return "!=";}
 	}
+
+	/**
+	 * @param $statement
+	 */
+	public function bind(&$statement) {
+		foreach ($this->data_set as $key => $data_item) {
+			if (is_integer($data_item)) {
+				$statement->bindValue($key, $data_item, \PDO::PARAM_INT);
+			} else {
+				$statement->bindValue($key, $data_item, \PDO::PARAM_STR);
+			}
+		}
+	}
 }
 ?>
