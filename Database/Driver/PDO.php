@@ -264,8 +264,10 @@ class PDO {
 
 		if (is_integer($limit)) {
 			$SQL .= " LIMIT {$limit}";
-		} else if (is_array($order)) {
-			$SQL .= " LIMIT {$limit[0]},{$limit[1]}";
+		} else if (is_array($limit) && count($limit) == 1) {
+			$SQL .= " LIMIT {$limit[0]}";
+		} else if (is_array($limit) && count($limit) == 2) {
+			$SQL .= " LIMIT {$limit[0]}, {$limit[1]}";
 		}
 		$statement = $this->prepare($SQL);
 		$whete_obj->bind($statement);
