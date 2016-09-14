@@ -218,6 +218,18 @@ class PDO {
 	}
 
 	/**
+	 * @param $table
+	 * @param $where
+	 */
+	public function delete($table, $where) {
+		$whete_obj = new PDOWhereConstructor($where);
+		$SQL       = "DELETE FROM `{$table}` {$whete_obj->get_sql()}";
+		$statement = $this->prepare($SQL);
+		$whete_obj->bind($statement);
+		return $statement->execute();
+	}
+
+	/**
 	 * @param  $table
 	 * @param  array    $where
 	 * @param  $order
