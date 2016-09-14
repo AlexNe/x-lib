@@ -61,6 +61,11 @@ class PDO {
 		}
 	}
 
+	public function set_charset() {
+		$charset = $this->Credetional->get_charset();
+		$this->exec("SET NAMES `{$charset}`");
+	}
+
 	protected function connect() {
 		try {
 			$this->PDO = new \PDO(
@@ -68,6 +73,7 @@ class PDO {
 				$this->Credetional->get_username(),
 				$this->Credetional->get_password());
 			$this->PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			$this->set_charset();
 		} catch (\PDOException $e) {
 			throw new PDO_ConnectionError("Connection to database error", 1, [
 				"message" => $e->getMessage(),
@@ -145,7 +151,7 @@ class PDO {
 	 * @param $table
 	 * @param $data
 	 */
-	public function insert($table, $data, $replace) {
+	public function insert($table, $data, $replace = false) {
 
 		$keys    = array_keys($data);
 		$pattern = array_map(function ($key) {return ":{$key}";}, $keys);
@@ -154,7 +160,7 @@ class PDO {
 		} else {
 			$type = "INSERT";
 		}
-		$SQL       = $type . " INTO `{$table}` (`" . implode('`,`', $keys) . "`) VALUES ( " . implode(", ", $keys) . " )";
+		$SQL       = "{$type} INTO `{$table}` (`" . implode('`,`', $keys) . "`) VALUES ( " . implode(", ", $pattern) . " )";
 		$statement = $this->prepare($SQL);
 		foreach ($keys as $key) {
 			if (is_integer($data[$key])) {
@@ -163,7 +169,12 @@ class PDO {
 				$statement->bindValue(":{$key}", $data[$key], \PDO::PARAM_STR);
 			}
 		}
-		return $statement->execute();
+
+		if ($statement->execute()) {
+			return $this->PDO->lastInsertId();
+		}
+
+		return false;
 	}
 
 	/**
@@ -243,6 +254,7 @@ class PDO {
 	 * @param null     $columns
 	 */
 	public function select_statement($table, $where = [], $order = null, $limit = null, $columns = "*") {
+		$this->build_columns($columns);
 		$SQL       = "SELECT {$columns} FROM `{$table}` ";
 		$whete_obj = new PDOWhereConstructor($where);
 		$SQL .= $whete_obj->get_sql();
@@ -255,11 +267,23 @@ class PDO {
 		} else if (is_array($order)) {
 			$SQL .= " LIMIT {$limit[0]},{$limit[1]}";
 		}
-
 		$statement = $this->prepare($SQL);
 		$whete_obj->bind($statement);
 		$statement->execute();
 		return $statement;
+	}
+
+	/**
+	 * @param $columns
+	 */
+	private function build_columns(&$columns) {
+		if (count($columns) == 1 && is_array($columns[0])) {
+			$columns = "`" . implode("`,`", $columns[0]) . "`";
+		} else if (count($columns) > 1) {
+			$columns = "`" . implode("`,`", $columns) . "`";
+		} else {
+			$columns = "*";
+		}
 	}
 }
 

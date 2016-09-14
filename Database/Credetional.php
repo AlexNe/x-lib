@@ -75,7 +75,7 @@ class Credetional {
 	}
 
 	public function get_PDO_MySQL_DSN() {
-		return "mysql:host={$this->hostname};port={$this->port};dbname={$this->database}";
+		return "mysql:host={$this->hostname};port={$this->port};dbname={$this->database};";
 	}
 
 	public function get_model() {
