@@ -73,6 +73,7 @@ class PDO {
 				$this->Credetional->get_username(),
 				$this->Credetional->get_password());
 			$this->PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+			//$this->PDO->setAttribute(\PDO::ATTR_STATEMENT_CLASS, ['X\Database\Driver\PDOStatement', [$this->PDO]]);
 			$this->set_charset();
 		} catch (\PDOException $e) {
 			throw new PDO_ConnectionError("Connection to database error", 1, [
@@ -189,6 +190,7 @@ class PDO {
 	 * @param $SQL
 	 */
 	public function prepare($SQL) {
+		return new PDOStatement($this->PDO, $SQL);
 		return $this->PDO->prepare($SQL);
 	}
 
@@ -239,7 +241,7 @@ class PDO {
 	 */
 	public function simple($table, $where = [], $order = null, $limit = null, $columns = "*") {
 		$statement = $this->select_statement($table, $where, $order, 1, $columns);
-		if ($statement->columnCount() > 0) {
+		if ($statement->rowCount() > 0) {
 			return $statement->fetchAll(\PDO::FETCH_ASSOC)[0];
 		} else {
 			return false;
@@ -299,6 +301,12 @@ class PDO {
 			$columns = "*";
 		}
 	}
+
+	public function __sleep() {
+		return ['Credetional'];
+	}
+
+	public function __wakeup() {}
 }
 
 ?>

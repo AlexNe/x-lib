@@ -38,6 +38,7 @@ class PDOWhereConstructor {
 	 * @param $data
 	 */
 	public function __construct($data = []) {
+		$this->data_set = [];
 		$this->Parse($data);
 	}
 
@@ -60,7 +61,7 @@ class PDOWhereConstructor {
 	 */
 	public function Parse($data = []) {
 		if (is_array($data)) {
-			if (count($data > 0)) {
+			if (count($data) > 0) {
 				$this->SQL = "WHERE ";
 				$this->SQL .= $this->build_where_string($data);
 			} else {
