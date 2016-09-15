@@ -6,23 +6,23 @@ class Import extends EItem {
 	 * @var array
 	 */
 	protected $trace;
-	/**
-	 * @var string
-	 */
-	protected $original;
 
 	/**
-	 * @param string $original
-	 * @param string $message
-	 * @param int    $code
-	 * @param string $file
-	 * @param int    $line
-	 * @param array  $trace
+	 * @param $exception
 	 */
-	public function __construct($original, $message, $code = 0, $file = false, $line = false, $trace = []) {
-		parent::__construct("system", $message, $code, $file, $line, []);
-		$this->original = $original;
-		$this->trace    = $trace;
+	public function __construct($exception) {
+		parent::__construct("system",
+			$exception->getMessage(),
+			$exception->getCode(),
+			$exception->getFile(),
+			$exception->getLine(), []);
+
+		$this->trace       = $exception->getTrace();
+		$this->object_name = (new \ReflectionClass($exception))->getName();
+
+		if ($exception instanceof \PDOException) {
+			$this->context["MySQL_Driver"] = $exception->errorInfo;
+		}
 	}
 
 	/**
@@ -30,13 +30,6 @@ class Import extends EItem {
 	 */
 	public function Trace() {
 		return $this->trace;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function Model() {
-		return array_merge(["original" => $this->original], parent::Model());
 	}
 }
 ?>

@@ -5,6 +5,11 @@ namespace X\ETrace;
  *
  */
 class EItem extends \Exception {
+
+	/**
+	 * @var mixed
+	 */
+	protected $run_context;
 	/**
 	 * @var int
 	 */
@@ -13,11 +18,22 @@ class EItem extends \Exception {
 	 * @var mixed
 	 */
 	protected $hash;
-
 	/**
 	 * @var mixed
 	 */
-	protected $context;
+	protected $host;
+	/**
+	 * @var mixed
+	 */
+	protected $type;
+	/**
+	 * @var mixed
+	 */
+	protected $session_id;
+	/**
+	 * @var mixed
+	 */
+	protected $object_name;
 
 	/**
 	 * @param enum   $type      paranoid | trace | system | fatal | error | notification
@@ -39,9 +55,12 @@ class EItem extends \Exception {
 		if ( ! ($line === false)) {
 			$this->line = $line;
 		}
-
-		$this->context = $context;
-		$this->hash    = $this->calcHash();
+		$this->type        = $type;
+		$this->run_context = $context;
+		$this->hash        = $this->calcHash();
+		$this->host        = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "no.host";
+		$this->session_id  = md5(microtime());
+		$this->object_name = (new \ReflectionClass($this))->getName();
 	}
 
 	/**
@@ -62,7 +81,7 @@ class EItem extends \Exception {
 	 * @return mixed
 	 */
 	public function getContext() {
-		return $this->context;
+		return $this->run_context;
 	}
 
 	/**
@@ -75,20 +94,33 @@ class EItem extends \Exception {
 	public function Model() {
 		return
 			[
-			"hash"    => $this->hash,
-			"message" => $this->message,
-			"code"    => $this->code,
-			"file"    => $this->file,
-			"line"    => $this->line,
-			"count"   => $this->count,
-			"trace"   => $this->Trace(),
-			"context" => $this->context,
-			"globals" => $GLOBALS,
+			"hash"        => $this->hash,
+			"host"        => $this->host,
+			"type"        => $this->type,
+			"code"        => $this->code,
+			"file"        => $this->file,
+			"line"        => $this->line,
+			"count"       => $this->count,
+			"trace"       => $this->Trace(),
+			"message"     => $this->message,
+			"object_name" => $this->object_name,
+			"context"     => $this->run_context,
 		];
 	}
 
 	public function increment() {
 		$this->count++;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function count() {
+		return $this->count;
+	}
+
+	public function clean_context() {
+		$this->run_context = [];
 	}
 
 	/**
@@ -98,8 +130,20 @@ class EItem extends \Exception {
 		return $this->hash;
 	}
 
+	/**
+	 * @param  $uid
+	 * @return mixed
+	 */
 	private function calcHash() {
-		return md5(serialize([$this->message, $this->code, $this->file, $this->line, $this->Trace()]));
+		return md5(serialize([
+			$this->object_name,
+			$this->host,
+			$this->type,
+			$this->message,
+			$this->code,
+			$this->file,
+			$this->line,
+			$this->Trace()]));
 	}
 }
 ?>

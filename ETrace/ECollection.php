@@ -1,18 +1,28 @@
 <?php
 namespace X\ETrace;
 
-class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
-{
-
+class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable {
+	/**
+	 * @var mixed
+	 */
+	protected $time, $microtime, $session_id;
 	/**
 	 * Хранилище объектов
 	 * @var array
 	 */
 	protected $__collection = [];
+	/**
+	 * @var array
+	 */
+	protected $context_collection = [];
+	public function __construct() {
+		$this->time       = time();
+		$this->microtime  = microtime();
+		$this->session_id = md5($this->microtime);
+	}
 
 	// --------------------------------------------------------------------
-	public function Serialize()
-	{
+	public function Serialize() {
 		return serialize($this);
 	}
 
@@ -24,10 +34,8 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 * @throws Exception
 	 * @return void
 	 */
-	private function __check_type(&$object)
-	{
-		if ( ! ($object instanceof EItem))
-		{
+	private function __check_type(&$object) {
+		if ( ! ($object instanceof EItem)) {
 			throw new \Exception('Объект типа `' . get_class($object)
 				. '` не может быть добавлен в коллекцию объектов типа `' . $this->__type . '`');
 		}
@@ -41,11 +49,9 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 * @param  object(s) Объекты
 	 * @return mixed     Collection
 	 */
-	public function add()
-	{
+	public function add() {
 		$args = func_get_args();
-		foreach ($args as $object)
-		{
+		foreach ($args as $object) {
 			$this->offsetSet(null, $object);
 		}
 		return $this;
@@ -59,11 +65,9 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 * @param  object(s) Объекты
 	 * @return mixed     Collection
 	 */
-	public function remove()
-		{
+	public function remove() {
 		$args = func_get_args();
-		foreach ($args as $object)
-			{
+		foreach ($args as $object) {
 			unset($this->__collection[array_search($object, $this->__collection)]);
 		}
 		return $this;
@@ -76,8 +80,7 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 *
 	 * @return mixed Collection
 	 */
-	public function clear()
-			{
+	public function clear() {
 		$this->__collection = [];
 		return $this;
 	}
@@ -89,8 +92,7 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 *
 	 * @return bool
 	 */
-	public function isEmpty()
-			{
+	public function isEmpty() {
 		return empty($this->__collection);
 	}
 
@@ -104,8 +106,7 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 *
 	 * @return CollectionIterator
 	 */
-	public function getIterator()
-			{
+	public function getIterator() {
 		return new \ArrayIterator($this->__collection);
 	}
 
@@ -121,16 +122,14 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 * @param  mixed  $offset Object
 	 * @return void
 	 */
-	public function offsetSet($offset, $object)
-			{
+	public function offsetSet($offset, $object) {
 		$this->__check_type($object);
-		$offset = $object->getHash();
-		if (isset($this->__collection[$offset]))
-				{
+		$offset                              = $object->getHash();
+		$this->context_collection[$offset][] = $object->getContext();
+		$object->clean_context();
+		if (isset($this->__collection[$offset])) {
 			$this->__collection[$offset]->increment();
-		}
-				else
-				{
+		} else {
 			$this->__collection[$offset] = $object;
 		}
 	}
@@ -143,8 +142,7 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 * @param  integer $offset Ключ
 	 * @return bool
 	 */
-	public function offsetExists($offset)
-			{
+	public function offsetExists($offset) {
 		return isset($this->__collection[$offset]);
 	}
 
@@ -156,8 +154,7 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 * @param  integer $offset Ключ
 	 * @return void
 	 */
-	public function offsetUnset($offset)
-			{
+	public function offsetUnset($offset) {
 		unset($this->__collection[$offset]);
 	}
 
@@ -169,10 +166,8 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 * @param  integer $offset Ключ
 	 * @return mixed
 	 */
-	public function offsetGet($offset)
-			{
-		if (isset($this->__collection[$offset]) === FALSE)
-				{
+	public function offsetGet($offset) {
+		if (isset($this->__collection[$offset]) === FALSE) {
 			return NULL;
 		}
 		return $this->__collection[$offset];
@@ -188,8 +183,7 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable
 	 *
 	 * @return integer
 	 */
-	public function count()
-			{
+	public function count() {
 		return sizeof($this->__collection);
 	}
 }
