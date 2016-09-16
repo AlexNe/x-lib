@@ -9,7 +9,7 @@ class EItem extends \Exception {
 	/**
 	 * @var mixed
 	 */
-	protected $run_context;
+	protected $context;
 	/**
 	 * @var int
 	 */
@@ -47,7 +47,7 @@ class EItem extends \Exception {
 	 * @return mixed
 	 */
 	public function __construct($type, $message, $code = 0, $file = false, $line = false, $context = []) {
-		parent::__construct($message, $code);
+		parent::__construct($message, intval($code));
 		if ( ! ($file === false)) {
 			$this->file = $file;
 		}
@@ -55,8 +55,9 @@ class EItem extends \Exception {
 		if ( ! ($line === false)) {
 			$this->line = $line;
 		}
+
 		$this->type        = $type;
-		$this->run_context = $context;
+		$this->context     = $context;
 		$this->hash        = $this->calcHash();
 		$this->host        = isset($_SERVER["HTTP_HOST"]) ? $_SERVER["HTTP_HOST"] : "no.host";
 		$this->session_id  = md5(microtime());
@@ -81,7 +82,14 @@ class EItem extends \Exception {
 	 * @return mixed
 	 */
 	public function getContext() {
-		return $this->run_context;
+		return $this->context;
+	}
+
+	/**
+	 * @param $context
+	 */
+	public function setContext($context) {
+		$this->context = $context;
 	}
 
 	/**
@@ -103,8 +111,8 @@ class EItem extends \Exception {
 			"count"       => $this->count,
 			"trace"       => $this->Trace(),
 			"message"     => $this->message,
+			"context"     => $this->context,
 			"object_name" => $this->object_name,
-			"context"     => $this->run_context,
 		];
 	}
 
@@ -120,7 +128,7 @@ class EItem extends \Exception {
 	}
 
 	public function clean_context() {
-		$this->run_context = [];
+		$this->context = [];
 	}
 
 	/**

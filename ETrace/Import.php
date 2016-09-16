@@ -26,7 +26,7 @@ class Import extends EItem {
 	}
 
 	/**
-	 * @return array
+	 * @return mixed
 	 */
 	public function Trace() {
 		return $this->trace;

@@ -128,7 +128,7 @@ class TableItem {
 		$this->sql_type = "first";
 		$columns        = func_get_args();
 		if ($this->driver instanceof \X\Database\Driver\PDO) {
-			$this->data_columns = $columns;
+			$this->data_columns = (isset($columns[0])) ? $columns[0] : "*";
 			return $this;
 		}
 
@@ -152,7 +152,7 @@ class TableItem {
 		$columns        = func_get_args();
 
 		if ($this->driver instanceof \X\Database\Driver\PDO) {
-			$this->data_columns = $columns;
+			$this->data_columns = (isset($columns[0])) ? $columns[0] : "*";
 			return $this;
 		}
 

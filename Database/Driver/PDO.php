@@ -293,9 +293,7 @@ class PDO {
 	 * @param $columns
 	 */
 	private function build_columns(&$columns) {
-		if (count($columns) == 1 && is_array($columns[0])) {
-			$columns = "`" . implode("`,`", $columns[0]) . "`";
-		} else if (count($columns) > 1) {
+		if (is_array($columns) && count($columns) > 0) {
 			$columns = "`" . implode("`,`", $columns) . "`";
 		} else {
 			$columns = "*";
