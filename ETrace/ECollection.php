@@ -125,7 +125,7 @@ class ECollection implements \IteratorAggregate, \ArrayAccess, \Countable {
 	public function offsetSet($offset, $object) {
 		$this->__check_type($object);
 		$offset = $object->getHash();
-		if (count($object->getContext()) > 0) {
+		if (count($object->getContext()) > 0 || ! isset($this->context_collection[$offset])) {
 			$this->context_collection[$offset][] = $object->getContext();
 			$object->clean_context();
 		}
