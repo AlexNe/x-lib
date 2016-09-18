@@ -21,7 +21,6 @@ class Memcached {
 		if (class_exists("\Memcached")) {
 			$this->prefix = $Credetional->get_prefix();
 			$this->link   = new \Memcached($this->prefix);
-			echo "con";
 			$this->link->addServers($Credetional->get_servers());
 		}
 	}
