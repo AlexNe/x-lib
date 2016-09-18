@@ -446,8 +446,7 @@ class TableItem {
 				$this->data_columns);
 		}
 		if ($this->sql_type == "delete" && $this->driver instanceof \X\Database\Driver\PDO) {
-			$whete_obj = new \X\Database\Driver\PDOWhereConstructor($this->data_where);
-			return $this->driver->exec($this->sql . $whete_obj->get_sql());
+			return $this->driver->delete($this->table_name, $this->data_where);
 		}
 
 		throw new \Exception("Internal error", 0);
