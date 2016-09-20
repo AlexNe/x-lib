@@ -17,7 +17,7 @@ class PDOStatement {
 	 */
 	public function __construct($db, $sql) {
 		$this->db      = $db;
-		$this->prepare = $this->db->prepare($sql);
+		$this->prepare = $this->db->prepare($sql, [\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true]);
 	}
 
 	/**
