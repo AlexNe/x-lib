@@ -164,10 +164,11 @@ class PDO {
 		$SQL       = "{$type} INTO `{$table}` (`" . implode('`,`', $keys) . "`) VALUES ( " . implode(", ", $pattern) . " )";
 		$statement = $this->prepare($SQL);
 		foreach ($keys as $key) {
-			if (is_integer($data[$key])) {
-				$statement->bindValue(":{$key}", $data[$key], \PDO::PARAM_INT);
+			$data_bind = $this->check_value($data[$key]);
+			if (is_integer($data_bind)) {
+				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_INT);
 			} else {
-				$statement->bindValue(":{$key}", $data[$key], \PDO::PARAM_STR);
+				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_STR);
 			}
 		}
 
@@ -209,10 +210,11 @@ class PDO {
 		$SQL .= $whete_obj->get_sql();
 		$statement = $this->prepare($SQL);
 		foreach ($keys as $key) {
-			if (is_integer($data[$key])) {
-				$statement->bindValue(":{$key}", $data[$key], \PDO::PARAM_INT);
+			$data_bind = $this->check_value($data[$key]);
+			if (is_integer($data_bind)) {
+				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_INT);
 			} else {
-				$statement->bindValue(":{$key}", $data[$key], \PDO::PARAM_STR);
+				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_STR);
 			}
 		}
 		$whete_obj->bind($statement);
@@ -305,6 +307,27 @@ class PDO {
 	}
 
 	public function __wakeup() {}
+
+	/**
+	 * @param  $value
+	 * @return mixed
+	 */
+	protected function check_value($value) {
+		$type = gettype($value);
+		switch (strtolower($type)) {
+			case 'boolean':
+				return $value ? 1 : "0";
+				break;
+
+			case 'null':
+				return "0";
+				break;
+
+			default:
+				return $value;
+				break;
+		}
+	}
 }
 
 ?>

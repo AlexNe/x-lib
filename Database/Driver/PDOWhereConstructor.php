@@ -199,11 +199,33 @@ class PDOWhereConstructor {
 	 */
 	public function bind(&$statement) {
 		foreach ($this->data_set as $key => $data_item) {
-			if (is_integer($data_item)) {
-				$statement->bindValue($key, $data_item, \PDO::PARAM_INT);
+			$data_bind = $this->check_value($data_item);
+			if (is_integer($data_bind)) {
+				$statement->bindValue($key, $data_bind, \PDO::PARAM_INT);
 			} else {
-				$statement->bindValue($key, $data_item, \PDO::PARAM_STR);
+				$statement->bindValue($key, $data_bind, \PDO::PARAM_STR);
 			}
+		}
+	}
+
+	/**
+	 * @param $value
+	 * @return mixed
+	 */
+	protected function check_value($value) {
+		$type = gettype($value);
+		switch (strtolower($type)) {
+			case 'boolean':
+				return $value ? 1 : "0";
+				break;
+
+			case 'null':
+				return "0";
+				break;
+
+			default:
+				return $value;
+				break;
 		}
 	}
 }
