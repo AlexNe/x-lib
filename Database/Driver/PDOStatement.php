@@ -73,6 +73,10 @@ class PDOStatement {
 	/**
 	 * @return mixed
 	 */
+	public function fetchColumn($column_number = 0) {
+		return $this->prepare->fetchColumn($column_number);
+	}
+
 	public function rowCount() {
 		return $this->prepare->rowCount();
 	}
