@@ -293,7 +293,11 @@ class PDO {
 		$whete_obj = new PDOWhereConstructor($where);
 		$SQL .= $whete_obj->get_sql();
 		if (is_array($order)) {
-			$SQL .= " ORDER BY `{$order[0]}` {$order[1]}";
+			if (count($order) == 2) {
+				$SQL .= " ORDER BY `{$order[0]}` {$order[1]}";
+			} else if (count($order) == 4) {
+				$SQL .= " ORDER BY `{$order[0]}` {$order[1]},`{$order[2]}` {$order[3]}";
+			}
 		}
 
 		if (is_integer($limit)) {
