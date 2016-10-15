@@ -234,6 +234,24 @@ class PDO {
 	}
 
 	/**
+	 * @param $table
+	 * @param $where
+	 * @param $column
+	 */
+	public function count($table, $where, $column = "*") {
+		$whete_obj = new PDOWhereConstructor($where);
+		$SQL       = "SELECT count({$column}) FROM `{$table}` {$whete_obj->get_sql()}";
+		$statement = $this->prepare($SQL);
+		$whete_obj->bind($statement);
+		$statement->execute();
+		if ($statement->rowCount() > 0) {
+			return $statement->fetchAll(\PDO::FETCH_ASSOC)[0]["count({$column})"];
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * @param  $table
 	 * @param  array    $where
 	 * @param  $order
