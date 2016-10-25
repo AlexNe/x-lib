@@ -38,7 +38,7 @@ class EItem extends \Exception {
 	/**
 	 * @param enum   $type      paranoid | trace | system | fatal | error | notification
 	 * @param string $message
-	 * @param int    $code      [= 0]
+	 * @param int    $code      [= 1]
 	 * @param string $file      [= false]
 	 * @param int    $line      [= false]
 	 * @param array  $context   [= []]
@@ -46,7 +46,7 @@ class EItem extends \Exception {
 	/**
 	 * @return mixed
 	 */
-	public function __construct($type, $message, $code = 0, $file = false, $line = false, $context = []) {
+	public function __construct($type, $message, $code = 1, $file = false, $line = false, $context = []) {
 		parent::__construct($message, intval($code));
 		if ( ! ($file === false)) {
 			$this->file = $file;

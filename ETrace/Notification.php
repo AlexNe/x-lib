@@ -8,7 +8,7 @@ class Notification extends EItem {
 	 * @param array      $context
 	 */
 	public function __construct($message, $context = []) {
-		parent::__construct("notification", $message, 1, false, false, $context);
+		parent::__construct("notification", $message, 0, false, false, $context);
 	}
 }
 ?>

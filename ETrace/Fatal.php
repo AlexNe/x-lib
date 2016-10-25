@@ -1,8 +1,7 @@
 <?php
 namespace X\ETrace;
 
-class Fatal extends EItem
-{
+class Fatal extends EItem {
 	/**
 	 * @var mixed
 	 */
@@ -17,25 +16,22 @@ class Fatal extends EItem
 	 * @param false       $line
 	 * @param array       $context
 	 */
-	public function __construct($message, $severity = 0, $file = false, $line = false)
-	{
-		parent::__construct("fatal", $message, 0, $file, $line, []);
+	public function __construct($message, $severity = 0, $file = false, $line = false) {
+		parent::__construct("fatal", $message, 1, $file, $line, []);
 		$this->severity = $severity;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function getSeverity()
-	{
+	public function getSeverity() {
 		return $this->severity;
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function Trace()
-	{
+	public function Trace() {
 		$trace = parent::Trace();
 		array_shift($trace);
 		return $trace;
