@@ -35,6 +35,7 @@ class Client extends ClientSettings {
 		}
 
 		curl_setopt($curl, CURLOPT_TIMEOUT, $this->data["timeout"]);
+		curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($curl, CURLOPT_HEADER, true);
