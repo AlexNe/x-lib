@@ -221,6 +221,24 @@ class PDO {
 		return $statement->execute();
 	}
 
+	public function increment($table, $column, $where = [], $value = 1) {
+		$SQL          = "UPDATE `{$table}` SET `{$column}` = `{$column}` + {$value} ";
+		$whete_obj = new PDOWhereConstructor($where);
+		$SQL .= $whete_obj->get_sql();
+		$statement = $this->prepare($SQL);
+		$whete_obj->bind($statement);
+		return $statement->execute();
+	}
+
+	public function decrement($table, $column, $where = [], $value = 1) {
+		$SQL          = "UPDATE `{$table}` SET `{$column}` = `{$column}` - {$value} ";
+		$whete_obj = new PDOWhereConstructor($where);
+		$SQL .= $whete_obj->get_sql();
+		$statement = $this->prepare($SQL);
+		$whete_obj->bind($statement);
+		return $statement->execute();
+	}
+
 	/**
 	 * @param $table
 	 * @param $where
