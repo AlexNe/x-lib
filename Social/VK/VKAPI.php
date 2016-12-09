@@ -3,9 +3,7 @@ namespace X\Social\VK;
 class VKAPICredentialsIsNull extends \X\ETrace\System {}
 class VKAPIResponseError extends \X\ETrace\System {}
 class VKAPIResponseNull extends \X\ETrace\System {}
-
 class VKAPI {
-
 	/**
 	 * @var \X\Social\VK\Credentials
 	 */
@@ -41,7 +39,9 @@ class VKAPI {
 	 * @param  array   $params
 	 * @return array
 	 */
-	public function api($method, $params = []) {}
+	public function api($method, $params = []) {
+		return $this->query($this->api_url . "method/" . $method, array_merge($params, ["v" => "5.28"]));
+	}
 
 	/**
 	 * @param  $url
