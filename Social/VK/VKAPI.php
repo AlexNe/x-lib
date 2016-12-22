@@ -1,8 +1,11 @@
 <?php
 namespace X\Social\VK;
-class VKAPICredentialsIsNull extends \X\ETrace\System {}
-class VKAPIResponseError extends \X\ETrace\System {}
-class VKAPIResponseNull extends \X\ETrace\System {}
+use X\ETrace\System as ETSystem;
+use X\Network\Http\Client as HttpClient;
+
+class VKAPICredentialsIsNull extends ETSystem {}
+class VKAPIResponseError extends ETSystem {}
+class VKAPIResponseNull extends ETSystem {}
 class VKAPI {
 	/**
 	 * @var \X\Social\VK\Credentials
@@ -40,7 +43,11 @@ class VKAPI {
 	 * @return array
 	 */
 	public function api($method, $params = []) {
-		return $this->query($this->api_url . "method/" . $method, array_merge($params, ["v" => "5.28"]));
+		if ( ! isset($params['v'])) {
+			$params["v"] = "5.28";
+		}
+
+		return $this->query($this->api_url . "method/" . $method, $params);
 	}
 
 	/**
@@ -49,7 +56,7 @@ class VKAPI {
 	 * @return array
 	 */
 	protected function query($url, $params = []) {
-		$Client = new \X\Network\Http\Client($url);
+		$Client = new HttpClient($url);
 		$Client->set_model_data(["post" => $params]);
 		$ClientResponse = $Client->exec();
 		if ($data = $ClientResponse->json_decode()) {
@@ -58,6 +65,18 @@ class VKAPI {
 		#return $ClientResponse->get_body();
 		#}
 		return false;
+	}
+
+	protected function check_response($data) {
+		if (isset($data["response"])) {
+			return $data["response"];
+		}
+
+		if (isset($data["error"])) {
+			throw new VKAPIResponseError($data["error"]["msg"], $data["error"]["code"]);
+		}
+
+		throw new VKAPIResponseNull("VK API response error", 1, ["vk_response" => $data]);
 	}
 }
 ?>

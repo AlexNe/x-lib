@@ -2,7 +2,6 @@
 namespace X\Cache;
 
 class Memcache {
-
 	/**
 	 * @var mixed
 	 */
@@ -22,7 +21,7 @@ class Memcache {
 			$this->prefix = $prefix;
 			$this->mcache = new \memcache();
 
-			$this->mcache->connect($host, $port)
+			@$this->mcache->connect($host, $port)
 			|| $this->mcache = false;
 		}
 	}
@@ -38,7 +37,7 @@ class Memcache {
 		}
 
 		$key = $this->prefix . $key;
-		return $this->mcache->set($key, $value, 0, $expire);
+		return @$this->mcache->set($key, $value, 0, $expire);
 	}
 
 	/**
@@ -50,7 +49,7 @@ class Memcache {
 		}
 
 		$key = $this->prefix . $key;
-		return $this->mcache->get($key, 0);
+		return @$this->mcache->get($key, 0);
 	}
 }
 ?>

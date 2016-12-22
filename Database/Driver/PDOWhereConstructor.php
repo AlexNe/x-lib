@@ -21,7 +21,7 @@
  *
  */
 namespace X\Database\Driver;
-use \X\ETrace\System as ESys;
+use X\ETrace\System as ESys;
 
 class PDOWhereConstructor_InputDataTypeError extends ESys {}
 class PDOWhereConstructor_OperatorTypeError extends ESys {}
@@ -69,7 +69,7 @@ class PDOWhereConstructor {
 			}
 		} else {
 			throw new PDOWhereConstructor_InputDataTypeError("Where data must have array type", 1, [
-				"input_data" => $data,
+				"input_data" => $data
 			]);
 		}
 	}
@@ -158,7 +158,7 @@ class PDOWhereConstructor {
 						if (is_array($data)) {
 							throw new PDOWhereConstructor_OperatorTypeError("For operator '{$key_info[1]} 'data' must have int or string value'", 1, [
 								"key"  => $key,
-								"data" => $data,
+								"data" => $data
 							]);
 						}
 
@@ -176,7 +176,7 @@ class PDOWhereConstructor {
 		return [
 			"type"     => $column_type, // column,set
 			"operator" => $operator,    // column = {=,>,<,IN},set= { OR, AND }
-			"name"     => $column_name,
+			"name"     => $column_name
 		];
 	}
 
@@ -199,33 +199,16 @@ class PDOWhereConstructor {
 	 */
 	public function bind(&$statement) {
 		foreach ($this->data_set as $key => $data_item) {
-			$data_bind = $this->check_value($data_item);
-			if (is_integer($data_bind)) {
+			$data_bind = $data_item;
+			if (is_bool($data_bind)) {
+				$statement->bindValue($key, $data_bind, \PDO::PARAM_BOOL);
+			} else if (is_null($data_bind)) {
+				$statement->bindValue($key, $data_bind, \PDO::PARAM_NULL);
+			} else if (is_integer($data_bind)) {
 				$statement->bindValue($key, $data_bind, \PDO::PARAM_INT);
 			} else {
 				$statement->bindValue($key, $data_bind, \PDO::PARAM_STR);
 			}
-		}
-	}
-
-	/**
-	 * @param $value
-	 * @return mixed
-	 */
-	protected function check_value($value) {
-		$type = gettype($value);
-		switch (strtolower($type)) {
-			case 'boolean':
-				return $value ? 1 : "0";
-				break;
-
-			case 'null':
-				return "0";
-				break;
-
-			default:
-				return $value;
-				break;
 		}
 	}
 }

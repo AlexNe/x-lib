@@ -30,8 +30,8 @@
  *
  */
 namespace X\Database\Driver;
-use \X\Database\Credetional as Credetional;
-use \X\ETrace\System as ESys;
+use X\Database\Credetional as Credetional;
+use X\ETrace\System as ESys;
 
 class PDO_CredetionalError extends ESys {}
 class PDO_ConnectionError extends ESys {}
@@ -78,7 +78,7 @@ class PDO {
 		} catch (\PDOException $e) {
 			throw new PDO_ConnectionError("Connection to database error", 1, [
 				"message" => $e->getMessage(),
-				"info"    => $e->errorInfo,
+				"info"    => $e->errorInfo
 			]);
 		}
 	}
@@ -108,7 +108,7 @@ class PDO {
 			} else {
 				throw new PDO_UnknownError("PDO Database Error", 1, [
 					"SQL"           => $SQL,
-					"error_message" => $e->getMessage(),
+					"error_message" => $e->getMessage()
 				]);
 			}
 		}
@@ -142,7 +142,7 @@ class PDO {
 			} else {
 				throw new PDO_UnknownError("PDO Database Error", 1, [
 					"SQL"           => $SQL,
-					"error_message" => $e->getMessage(),
+					"error_message" => $e->getMessage()
 				]);
 			}
 		}
@@ -153,7 +153,6 @@ class PDO {
 	 * @param $data
 	 */
 	public function insert($table, $data, $replace = false) {
-
 		$keys    = array_keys($data);
 		$pattern = array_map(function ($key) {return ":{$key}";}, $keys);
 		if ($replace) {
@@ -164,8 +163,12 @@ class PDO {
 		$SQL       = "{$type} INTO `{$table}` (`" . implode('`,`', $keys) . "`) VALUES ( " . implode(", ", $pattern) . " )";
 		$statement = $this->prepare($SQL);
 		foreach ($keys as $key) {
-			$data_bind = $this->check_value($data[$key]);
-			if (is_integer($data_bind)) {
+			$data_bind = $data[$key];
+			if (is_bool($data_bind)) {
+				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_BOOL);
+			} else if (is_null($data_bind)) {
+				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_NULL);
+			} else if (is_integer($data_bind)) {
 				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_INT);
 			} else {
 				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_STR);
@@ -210,8 +213,12 @@ class PDO {
 		$SQL .= $whete_obj->get_sql();
 		$statement = $this->prepare($SQL);
 		foreach ($keys as $key) {
-			$data_bind = $this->check_value($data[$key]);
-			if (is_integer($data_bind)) {
+			$data_bind = $data[$key];
+			if (is_bool($data_bind)) {
+				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_BOOL);
+			} else if (is_null($data_bind)) {
+				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_NULL);
+			} else if (is_integer($data_bind)) {
 				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_INT);
 			} else {
 				$statement->bindValue(":{$key}", $data_bind, \PDO::PARAM_STR);
@@ -222,7 +229,7 @@ class PDO {
 	}
 
 	public function increment($table, $column, $where = [], $value = 1) {
-		$SQL          = "UPDATE `{$table}` SET `{$column}` = `{$column}` + {$value} ";
+		$SQL       = "UPDATE `{$table}` SET `{$column}` = `{$column}` + {$value} ";
 		$whete_obj = new PDOWhereConstructor($where);
 		$SQL .= $whete_obj->get_sql();
 		$statement = $this->prepare($SQL);
@@ -231,7 +238,7 @@ class PDO {
 	}
 
 	public function decrement($table, $column, $where = [], $value = 1) {
-		$SQL          = "UPDATE `{$table}` SET `{$column}` = `{$column}` - {$value} ";
+		$SQL       = "UPDATE `{$table}` SET `{$column}` = `{$column}` - {$value} ";
 		$whete_obj = new PDOWhereConstructor($where);
 		$SQL .= $whete_obj->get_sql();
 		$statement = $this->prepare($SQL);
@@ -347,27 +354,6 @@ class PDO {
 	}
 
 	public function __wakeup() {}
-
-	/**
-	 * @param  $value
-	 * @return mixed
-	 */
-	protected function check_value($value) {
-		$type = gettype($value);
-		switch (strtolower($type)) {
-			case 'boolean':
-				return $value ? 1 : "0";
-				break;
-
-			case 'null':
-				return "0";
-				break;
-
-			default:
-				return $value;
-				break;
-		}
-	}
 }
 
 ?>
