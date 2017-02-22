@@ -99,12 +99,8 @@ class PDOWhereConstructor {
 					$SQL_Fragment_Items[]      = "`{$item_info["name"]}` {$item_info["operator"]} {$data_key}";
 				}
 			} else {
-				$level_data = $this->build_where_string($value, ($inner_level + 1), $item_info["operator"]);
-				if ($inner_level > 0) {
-					$SQL_Fragment_Items[] = "({$level_data})";
-				} else {
-					$SQL_Fragment_Items[] = $level_data;
-				}
+				$level_data           = $this->build_where_string($value, ($inner_level + 1), $item_info["operator"]);
+				$SQL_Fragment_Items[] = "({$level_data})";
 			}
 			$key_index++;
 		}
