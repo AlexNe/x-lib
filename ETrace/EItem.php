@@ -5,7 +5,6 @@ namespace X\ETrace;
  *
  */
 class EItem extends \Exception {
-
 	/**
 	 * @var mixed
 	 */
@@ -112,7 +111,7 @@ class EItem extends \Exception {
 			"trace"       => $this->Trace(),
 			"message"     => $this->message,
 			"context"     => $this->context,
-			"object_name" => $this->object_name,
+			"object_name" => $this->object_name
 		];
 	}
 
@@ -143,6 +142,13 @@ class EItem extends \Exception {
 	 * @return mixed
 	 */
 	private function calcHash() {
+		$re_trace = array_map(function ($item) {
+			if (isset($item["file"])) {
+				return [$item["file"], $item["line"]];
+			} else {
+				return ["nofile", "noline"];
+			}
+		}, $this->Trace());
 		return md5(serialize([
 			$this->object_name,
 			$this->host,
@@ -151,7 +157,7 @@ class EItem extends \Exception {
 			$this->code,
 			$this->file,
 			$this->line,
-			$this->Trace()]));
+			$re_trace]));
 	}
 }
 ?>
