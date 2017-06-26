@@ -1,6 +1,6 @@
 <?php
 namespace X\Database\Driver;
-use \X\ETrace\System as ESys;
+use X\ETrace\System as ESys;
 
 class PDOStatement {
 	/**

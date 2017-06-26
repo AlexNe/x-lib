@@ -77,9 +77,8 @@ class PDOWhereConstructor {
 	/**
 	 * @param $data
 	 */
-	private function build_where_string($data, $inner_level = 0, $operator = "AND") {
+	private function build_where_string($data, $inner_level = 0, $operator = "AND", $key_index = 0) {
 		$SQL_Fragment_Items = "";
-		$key_index          = 0;
 		foreach ($data as $key => $value) {
 			$item_info = $this->check_data_item($key, $value, $inner_level, $operator);
 			if ($item_info["type"] == "column") {
@@ -99,7 +98,7 @@ class PDOWhereConstructor {
 					$SQL_Fragment_Items[]      = "`{$item_info["name"]}` {$item_info["operator"]} {$data_key}";
 				}
 			} else {
-				$level_data           = $this->build_where_string($value, ($inner_level + 1), $item_info["operator"]);
+				$level_data           = $this->build_where_string($value, ($inner_level + 1), $item_info["operator"], ++$key_index);
 				$SQL_Fragment_Items[] = "({$level_data})";
 			}
 			$key_index++;
