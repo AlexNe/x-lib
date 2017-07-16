@@ -142,13 +142,18 @@ class EItem extends \Exception {
 	 * @return mixed
 	 */
 	private function calcHash() {
-		$re_trace = array_map(function ($item) {
-			if (isset($item["file"])) {
-				return [$item["file"], $item["line"]];
-			} else {
-				return ["nofile", "noline"];
-			}
-		}, $this->Trace());
+		if (is_array($this->Trace())) {
+			$re_trace = array_map(function ($item) {
+				if (isset($item["file"])) {
+					return [$item["file"], $item["line"]];
+				} else {
+					return ["nofile", "noline"];
+				}
+			}, $this->Trace());
+		} else {
+			$re_trace = [];
+		}
+
 		return md5(serialize([
 			$this->object_name,
 			$this->host,
