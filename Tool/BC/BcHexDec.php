@@ -2,9 +2,6 @@
 namespace X\Tool\BC;
 
 trait BcHexDec {
-/**
- * @param $hex
- */
 	protected function bchexdec($hex) {
 		if (strlen($hex) == 1) {
 			return hexdec($hex);
@@ -15,5 +12,4 @@ trait BcHexDec {
 		}
 	}
 }
-
 ?>

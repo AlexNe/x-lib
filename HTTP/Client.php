@@ -4,30 +4,16 @@
  *
  */
 class X_HTTP_Client {
-	/**
-	 * @var string
-	 */
 	public $UserAgent = "Mozilla/5.0 (Windows NT 6.3; rv:41.0) Gecko/20100101 Firefox/41.0";
-	/**
-	 * @var array
-	 */
+
 	public $HEADERS = [];
-	/**
-	 * @var array
-	 */
+
 	public $Cookies = [];
-	/**
-	 * @var mixed
-	 */
+
 	public $Proxy = false;
-	/**
-	 * @var int
-	 */
+
 	public $Timeout = 60;
 
-	/**
-	 * @param array $cfg
-	 */
 	public function __construct($cfg = []) {
 		foreach ($cfg as $key => $value) {
 			switch (strtolower($key)) {
@@ -50,10 +36,6 @@ class X_HTTP_Client {
 		}
 	}
 
-	/**
-	 * @param $URL
-	 * @return mixed
-	 */
 	public function GET($URL) {
 		$this->HEADERS[] = "User-Agent: " . $this->UserAgent;
 		$cookies_arr     = [];
@@ -79,9 +61,6 @@ class X_HTTP_Client {
 		return $result;
 	}
 
-	/**
-	 * @param $URL
-	 */
 	public function POST($URL) {
 		# NOT YET
 	}

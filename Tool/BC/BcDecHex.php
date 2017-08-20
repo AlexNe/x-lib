@@ -2,9 +2,6 @@
 namespace X\Tool\BC;
 
 trait BcDecHex {
-/**
- * @param $dec
- */
 	protected function bcdechex($dec) {
 		$last   = bcmod($dec, 16);
 		$remain = bcdiv(bcsub($dec, $last), 16);
